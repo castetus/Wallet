@@ -34,10 +34,15 @@ public class ConsoleApp {
                     break;
                 }
 
+                List<String> commandArgs = args.subList(1, args.size());
+
                 CommandResult result;
 
                 switch (command) {
-                    case "register" -> result = authController.register(args);
+                    case "register" -> result = authController.register(commandArgs);
+                    case "login" -> result = authController.login(commandArgs);
+                    case "logout" -> result = authController.logout();
+
                     default -> result = new CommandResult(false, "Unknown command");
                 }
 
