@@ -13,15 +13,16 @@ public class CategoryService {
             throw new IllegalArgumentException("Category name is required");
         }
 
-        if (get(wallet, name) != null) {
+        if (get(wallet, name, type) != null) {
             throw new IllegalArgumentException("Category already exists");
         }
 
         wallet.addCategory(new Category(name, type));
     }
 
-    public Category get(Wallet wallet, String name) {
+    public Category get(Wallet wallet, String name, CategoryType type) {
         return wallet.getCategories().stream()
+                .filter(category -> category.getType() == type)
                 .filter(category -> category.getName().equals(name))
                 .findFirst()
                 .orElse(null);

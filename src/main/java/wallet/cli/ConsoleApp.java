@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleApp {
-    private final AuthController authController;
+    private final Controllers controllers;
     private final CommandParser parser;
 
-    public ConsoleApp(AuthController authController, CommandParser parser) {
-        this.authController = authController;
+    public ConsoleApp(Controllers controllers, CommandParser parser) {
+        this.controllers = controllers;
         this.parser = parser;
     }
 
@@ -36,15 +36,24 @@ public class ConsoleApp {
 
                 List<String> commandArgs = args.subList(1, args.size());
 
-                CommandResult result;
+                CommandResult result = switch (command) {
+                    case "register" -> controllers.auth().register(commandArgs);
+                    case "login" -> controllers.auth().login(commandArgs);
+                    case "logout" -> controllers.auth().logout();
 
-                switch (command) {
-                    case "register" -> result = authController.register(commandArgs);
-                    case "login" -> result = authController.login(commandArgs);
-                    case "logout" -> result = authController.logout();
+                    case "category" -> {
+                        if (commandArgs.isEmpty()) {
+                            yield new CommandResult(false, "Expected: category add|list");
+                        }
 
-                    default -> result = new CommandResult(false, "Unknown command");
-                }
+                        yield switch (commandArgs.get(0)) {
+                            case "add" -> controllers.category().addCategory(commandArgs.subList(1, commandArgs.size()));
+                            case "list" -> controllers.category().getCategoryList();
+                            default -> new CommandResult(false, "Unknown category command");
+                        };
+                    }
+                    default -> new CommandResult(false, "Unknown command");
+                };
 
                 System.out.println(result.message());
 
