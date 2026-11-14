@@ -9,5 +9,15 @@ public class Budget {
         this.limit = limit;
     }
 
-//    public get
+    public Category getCategory() {
+        return this.category;
+    }
+
+    public void setLimit(int amount) {
+        this.limit = amount;
+    }
+
+    public int getLimit() {
+        return this.limit;
+    }
 }

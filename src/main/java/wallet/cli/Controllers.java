@@ -1,11 +1,12 @@
 package wallet.cli;
 
 import wallet.controller.AuthController;
+import wallet.controller.BudgetController;
 import wallet.controller.CategoryController;
 
 public record Controllers(
         AuthController auth,
-        CategoryController category
+        CategoryController category,
 //        TransactionController transaction,
-//        BudgetController budget
+        BudgetController budget
 ) {}

@@ -52,6 +52,20 @@ public class ConsoleApp {
                             default -> new CommandResult(false, "Unknown category command");
                         };
                     }
+
+                    case "budget" -> {
+                        if (commandArgs.isEmpty()) {
+                            yield new CommandResult(false, "Expected: budget set|list");
+                        }
+
+                        yield switch (commandArgs.get(0)) {
+                            case "set" -> controllers.budget().set(
+                                    commandArgs.subList(1, commandArgs.size())
+                            );
+                            case "list" -> controllers.budget().getList();
+                            default -> new CommandResult(false, "Unknown budget command");
+                        };
+                    }
                     default -> new CommandResult(false, "Unknown command");
                 };
 
