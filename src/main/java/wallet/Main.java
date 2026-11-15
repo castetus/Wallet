@@ -4,14 +4,8 @@ import wallet.cli.CommandParser;
 import wallet.cli.ConsoleApp;
 import wallet.cli.Controllers;
 import wallet.context.WalletContext;
-import wallet.controller.AuthController;
-import wallet.controller.BudgetController;
-import wallet.controller.CategoryController;
-import wallet.controller.TransactionController;
-import wallet.service.AuthService;
-import wallet.service.BudgetService;
-import wallet.service.CategoryService;
-import wallet.service.TransactionService;
+import wallet.controller.*;
+import wallet.service.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,6 +14,7 @@ public class Main {
         CategoryService categoryService = new CategoryService();
         BudgetService budgetService = new BudgetService();
         TransactionService transactionService = new TransactionService(authService);
+        FinanceService financeService = new FinanceService();
 
         WalletContext walletContext = new WalletContext(authService);
 
@@ -39,11 +34,18 @@ public class Main {
                 budgetService,
                 walletContext
         );
+        FinanceController financeController = new FinanceController(
+                financeService,
+                budgetService,
+                categoryService,
+                walletContext
+        );
         Controllers controllers = new Controllers(
                 authController,
                 categoryController,
                 transactionController,
-                budgetController
+                budgetController,
+                financeController
         );
 
         ConsoleApp app = new ConsoleApp(controllers, parser);

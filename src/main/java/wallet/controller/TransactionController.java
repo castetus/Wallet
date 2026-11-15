@@ -81,6 +81,25 @@ public class TransactionController {
     }
 
     public CommandResult addTransfer(List<String> args) {
+        if (args.size() != 2) {
+            return new CommandResult(false, "Expected: transfer <username> <amount>");
+        }
 
+        try {
+            Wallet wallet = walletContext.getCurrentWallet();
+
+            String username = args.get(0);
+            int amount = Integer.parseInt(args.get(1));
+
+            transactionService.addTransfer(wallet, username, amount);
+
+            return new CommandResult(true, "Transfer completed successfully");
+
+        } catch (NumberFormatException e) {
+            return new CommandResult(false, "Amount must be an integer");
+
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return new CommandResult(false, e.getMessage());
+        }
     }
 }

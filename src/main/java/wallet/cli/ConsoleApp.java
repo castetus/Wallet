@@ -1,5 +1,7 @@
 package wallet.cli;
 
+import wallet.model.CategoryType;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -68,6 +70,32 @@ public class ConsoleApp {
                     case "income" -> controllers.transaction().addIncome(commandArgs);
                     case "expense" -> controllers.transaction().addExpense(commandArgs);
                     case "transfer" -> controllers.transaction().addTransfer(commandArgs);
+
+                    case "report" -> {
+                        if (args.isEmpty()) {
+                            yield controllers.finance().report();
+                        }
+
+                        String subcommand = args.get(0);
+                        List<String> categories = args.subList(1, args.size());
+
+                        yield switch (subcommand) {
+                            case "categories" -> {
+                                if (!categories.isEmpty()) {
+                                    yield new CommandResult(
+                                            false,
+                                            "Expected: report categories"
+                                    );
+                                }
+                                yield controllers.finance().reportCategories();
+                            }
+                            case "income" -> controllers.finance()
+                                    .reportSelected(categories, CategoryType.INCOME);
+                            case "expense" -> controllers.finance()
+                                    .reportSelected(categories, CategoryType.EXPENSE);
+                            default -> new CommandResult(false, "Unknown report command");
+                        };
+                    }
 
                     default -> new CommandResult(false, "Unknown command");
                 };
