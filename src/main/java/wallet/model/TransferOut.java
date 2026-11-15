@@ -7,4 +7,8 @@ public class TransferOut extends Transaction {
         super(amount);
         this.recipient = recipient;
     }
+
+    public String getCounterparty() {
+        return this.recipient;
+    }
 }

@@ -1,6 +1,7 @@
 package wallet.cli;
 
 import wallet.model.CategoryType;
+import wallet.service.AuthService;
 
 import java.util.List;
 import java.util.Scanner;
@@ -8,10 +9,12 @@ import java.util.Scanner;
 public class ConsoleApp {
     private final Controllers controllers;
     private final CommandParser parser;
+    private final AuthService authService;
 
-    public ConsoleApp(Controllers controllers, CommandParser parser) {
+    public ConsoleApp(Controllers controllers, CommandParser parser, AuthService authService) {
         this.controllers = controllers;
         this.parser = parser;
+        this.authService = authService;
     }
 
     public void run() {
@@ -31,6 +34,7 @@ public class ConsoleApp {
                 String command = args.getFirst();
 
                 if (command.equals("exit")) {
+                    this.authService.logout();
                     break;
                 }
 

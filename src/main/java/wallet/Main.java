@@ -6,11 +6,17 @@ import wallet.cli.Controllers;
 import wallet.context.WalletContext;
 import wallet.controller.*;
 import wallet.service.*;
+import wallet.storage.FileStorage;
+
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
+        FileStorage fileStorage = new FileStorage();
+        Map<String, String> users = fileStorage.loadUsers();
+
         CommandParser parser = new CommandParser();
-        AuthService authService = new AuthService();
+        AuthService authService = new AuthService(users);
         CategoryService categoryService = new CategoryService();
         BudgetService budgetService = new BudgetService();
         TransactionService transactionService = new TransactionService(authService);
@@ -48,7 +54,7 @@ public class Main {
                 financeController
         );
 
-        ConsoleApp app = new ConsoleApp(controllers, parser);
+        ConsoleApp app = new ConsoleApp(controllers, parser, authService);
         app.run();
     }
 }

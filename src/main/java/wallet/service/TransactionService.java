@@ -1,6 +1,7 @@
 package wallet.service;
 
 import wallet.model.*;
+import wallet.storage.FileStorage;
 
 public class TransactionService {
 
@@ -23,11 +24,13 @@ public class TransactionService {
         User recipient = authService.getUserByLogin(username);
         User sender = authService.getCurrentUser();
 
+        FileStorage fileStorage = new FileStorage();
+
         if (recipient == null) {
             throw new IllegalArgumentException("Recipient not found");
         }
 
-        if (recipient == authService.getCurrentUser()) {
+        if (recipient == sender) {
             throw new IllegalArgumentException("Cannot transfer to yourself");
         }
 
@@ -39,9 +42,11 @@ public class TransactionService {
             throw new IllegalArgumentException("Insufficient funds");
         }
 
-        Wallet recipientWallet = recipient.getWallet();
+        Wallet recipientWallet = fileStorage.loadWallet(recipient.getLogin());
 
         wallet.addTransaction(new TransferOut(amount, recipient.getLogin()));
         recipientWallet.addTransaction(new TransferIn(amount, sender.getLogin()));
+
+        fileStorage.saveWallet(recipient.getLogin(), recipientWallet);
     }
 }

@@ -3,16 +3,12 @@ package wallet.model;
 public class User {
     private final String login;
     private final String password;
-    private final Wallet wallet;
+    private Wallet wallet;
 
     public User(String login, String password) {
-        this(login, password, new Wallet());
-    }
-
-    public User(String login, String password, Wallet wallet) {
         this.login = login;
         this.password = password;
-        this.wallet = wallet;
+        this.wallet = new Wallet();
     }
 
     public String getLogin() {
@@ -21,6 +17,10 @@ public class User {
 
     public Wallet getWallet() {
         return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
     }
 
     public boolean checkPassword(String password) {

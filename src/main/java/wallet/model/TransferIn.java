@@ -7,4 +7,8 @@ public class TransferIn extends Transaction {
         super(amount);
         this.sender = sender;
     }
+
+    public String getCounterparty() {
+        return this.sender;
+    }
 }
