@@ -13,15 +13,13 @@ import wallet.service.BudgetService;
 import wallet.service.CategoryService;
 import wallet.service.TransactionService;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
         CommandParser parser = new CommandParser();
         AuthService authService = new AuthService();
         CategoryService categoryService = new CategoryService();
         BudgetService budgetService = new BudgetService();
-        TransactionService transactionService = new TransactionService();
+        TransactionService transactionService = new TransactionService(authService);
 
         WalletContext walletContext = new WalletContext(authService);
 
@@ -35,7 +33,12 @@ public class Main {
                 categoryService,
                 walletContext
                 );
-        TransactionController transactionController = new TransactionController(transactionService, walletContext);
+        TransactionController transactionController = new TransactionController(
+                transactionService,
+                categoryService,
+                budgetService,
+                walletContext
+        );
         Controllers controllers = new Controllers(
                 authController,
                 categoryController,

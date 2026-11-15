@@ -35,4 +35,8 @@ public class AuthService {
     public User getCurrentUser() {
         return this.currentUser;
     }
+
+    public User getUserByLogin(String username) {
+        return users.get(username);
+    }
 }

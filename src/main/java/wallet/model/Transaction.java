@@ -9,6 +9,10 @@ public abstract class Transaction {
         this.category = category;
     }
 
+    protected Transaction(int amount) {
+        this(amount, null);
+    }
+
     public int getAmount() {
         return this.amount;
     }

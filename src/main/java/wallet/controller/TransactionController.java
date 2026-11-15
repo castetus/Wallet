@@ -31,12 +31,25 @@ public class TransactionController {
     }
 
     public CommandResult addIncome(List<String> args) {
+        return addTransaction(args, CategoryType.INCOME);
+    }
+
+    public CommandResult addExpense(List<String> args) {
+        return addTransaction(args, CategoryType.EXPENSE);
+    }
+
+    private CommandResult addTransaction(List<String> args, CategoryType type) {
+        String command = type == CategoryType.INCOME ? "income" : "expense";
+
         if (args.size() != 2) {
-            return new CommandResult(false, "Expected: income <category> <amount>");
+            return new CommandResult(
+                    false,
+                    "Expected: " + command + " <category> <amount>"
+            );
         }
 
         try {
-            Wallet wallet = this.walletContext.getCurrentWallet();
+            Wallet wallet = walletContext.getCurrentWallet();
 
             String categoryName = args.get(0);
             int amount = Integer.parseInt(args.get(1));
@@ -45,30 +58,26 @@ public class TransactionController {
                 return new CommandResult(false, "Amount must be greater than zero");
             }
 
-            Category category = categoryService.get(
-                    wallet,
-                    categoryName,
-                    CategoryType.INCOME
-            );
+            Category category = categoryService.get(wallet, categoryName, type);
 
             if (category == null) {
-                return new CommandResult(false, "Income category not found");
+                return new CommandResult(false, "Category not found");
             }
 
-            transactionService.addIncome(wallet, category, amount);
+            if (type == CategoryType.INCOME) {
+                transactionService.addIncome(wallet, category, amount);
+            } else {
+                transactionService.addExpense(wallet, category, amount);
+            }
 
-            return new CommandResult(true, "Income added successfully");
+            return new CommandResult(true, "Transaction added successfully");
 
         } catch (NumberFormatException e) {
             return new CommandResult(false, "Amount must be an integer");
 
-        } catch (IllegalStateException | IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             return new CommandResult(false, e.getMessage());
         }
-    }
-
-    public CommandResult addExpense(List<String> args) {
-
     }
 
     public CommandResult addTransfer(List<String> args) {
