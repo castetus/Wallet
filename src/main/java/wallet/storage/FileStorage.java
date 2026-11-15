@@ -4,7 +4,6 @@ package wallet.storage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import wallet.model.User;
 import wallet.model.Wallet;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ public class FileStorage {
     private final Path usersFile = directory.resolve("users.json");
     private final Path walletsDirectory = directory.resolve("wallets");
 
-    public void saveUsers(Map<String, User> users) {
+    public void saveUsers(Map<String, String> users) {
         try {
             Files.createDirectories(directory);
             mapper.writeValue(usersFile.toFile(), users);

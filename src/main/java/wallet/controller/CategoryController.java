@@ -24,12 +24,12 @@ public class CategoryController {
 
         Wallet wallet = this.walletContext.getCurrentWallet();
 
-        if (args.size() != 3) {
+        if (args.size() != 2) {
             throw new IllegalArgumentException("Incorrect arguments");
         }
 
-        String type = args.get(1);
-        String name = args.get(2);
+        String type = args.get(0);
+        String name = args.get(1);
 
         try {
             CategoryType categoryType = CategoryType.valueOf(type.toUpperCase());

@@ -1,6 +1,7 @@
 package wallet.service;
 
 import wallet.model.User;
+import wallet.model.Wallet;
 import wallet.storage.FileStorage;
 
 import java.util.HashMap;
@@ -24,7 +25,13 @@ public class AuthService {
         }
 
         users.put(username, new User(username, password));
-        this.fileStorage.saveUsers(this.users);
+        Map<String, String> credentials = new HashMap<>();
+
+        for (User user : users.values()) {
+            credentials.put(user.getLogin(), user.getPassword());
+        }
+
+        this.fileStorage.saveUsers(credentials);
         return true;
     }
 
@@ -32,7 +39,8 @@ public class AuthService {
         User user = this.users.get(username);
         if (user != null && user.checkPassword(password)) {
             this.currentUser = user;
-            this.fileStorage.loadWallet(username);
+            Wallet savedWallet = this.fileStorage.loadWallet(username);
+            this.currentUser.setWallet(savedWallet);
             return true;
         }
 
@@ -40,10 +48,13 @@ public class AuthService {
     }
 
     public void logout() {
-        fileStorage.saveWallet(
-                currentUser.getLogin(),
-                currentUser.getWallet()
-        );
+        if (this.currentUser != null) {
+            fileStorage.saveWallet(
+                    currentUser.getLogin(),
+                    currentUser.getWallet()
+            );
+        }
+
         this.currentUser = null;
     }
 

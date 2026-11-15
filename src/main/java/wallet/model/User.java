@@ -15,6 +15,10 @@ public class User {
         return login;
     }
 
+    public String getPassword() {
+        return this.password;
+    }
+
     public Wallet getWallet() {
         return wallet;
     }
