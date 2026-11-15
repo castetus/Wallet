@@ -1,8 +1,11 @@
 package wallet.controller;
 
 import wallet.cli.CommandResult;
-import wallet.model.*;
-import wallet.service.AuthService;
+import wallet.context.WalletContext;
+import wallet.model.Budget;
+import wallet.model.Category;
+import wallet.model.CategoryType;
+import wallet.model.Wallet;
 import wallet.service.BudgetService;
 import wallet.service.CategoryService;
 
@@ -10,16 +13,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BudgetController {
-    private final AuthService authService;
+    private final WalletContext walletContext;
     private final CategoryService categoryService;
     private final BudgetService budgetService;
 
     public BudgetController(
-            AuthService authService,
+            WalletContext walletContext,
             CategoryService categoryService,
             BudgetService budgetService
     ) {
-        this.authService = authService;
+        this.walletContext = walletContext;
         this.categoryService = categoryService;
         this.budgetService = budgetService;
     }
@@ -30,7 +33,7 @@ public class BudgetController {
         }
 
         try {
-            Wallet wallet = getCurrentWallet();
+            Wallet wallet = this.walletContext.getCurrentWallet();
 
             String categoryName = args.get(0);
             int amount = Integer.parseInt(args.get(1));
@@ -58,7 +61,7 @@ public class BudgetController {
 
     public CommandResult getList() {
         try {
-            Wallet wallet = getCurrentWallet();
+            Wallet wallet = this.walletContext.getCurrentWallet();
             List<Budget> budgets = budgetService.getList(wallet);
 
             if (budgets.isEmpty()) {
@@ -76,15 +79,5 @@ public class BudgetController {
         } catch (IllegalStateException e) {
             return new CommandResult(false, e.getMessage());
         }
-    }
-
-    private Wallet getCurrentWallet() {
-        User user = authService.getCurrentUser();
-
-        if (user == null) {
-            throw new IllegalStateException("User is not logged in");
-        }
-
-        return user.getWallet();
     }
 }

@@ -1,11 +1,10 @@
 package wallet.controller;
 
 import wallet.cli.CommandResult;
+import wallet.context.WalletContext;
 import wallet.model.Category;
 import wallet.model.CategoryType;
-import wallet.model.User;
 import wallet.model.Wallet;
-import wallet.service.AuthService;
 import wallet.service.CategoryService;
 
 import java.util.List;
@@ -14,26 +13,16 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final AuthService authService;
+    private final WalletContext walletContext;
 
-    public CategoryController (CategoryService categoryService, AuthService authService) {
+    public CategoryController (CategoryService categoryService, WalletContext walletContext) {
         this.categoryService = categoryService;
-        this.authService = authService;
-    }
-
-    private Wallet getCurrentWallet() {
-        User user = authService.getCurrentUser();
-
-        if (user == null) {
-            throw new IllegalStateException("User is not logged in");
-        }
-
-        return user.getWallet();
+        this.walletContext = walletContext;
     }
 
     public CommandResult addCategory (List<String> args) {
 
-        Wallet wallet = this.getCurrentWallet();
+        Wallet wallet = this.walletContext.getCurrentWallet();
 
         if (args.size() != 3) {
             throw new IllegalArgumentException("Incorrect arguments");
@@ -53,7 +42,7 @@ public class CategoryController {
 
     public CommandResult getCategoryList () {
         try {
-            Wallet wallet = getCurrentWallet();
+            Wallet wallet = this.walletContext.getCurrentWallet();
             List<Category> categories = categoryService.getList(wallet);
 
             String message = categories.stream()

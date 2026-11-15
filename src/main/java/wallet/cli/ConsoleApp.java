@@ -1,7 +1,5 @@
 package wallet.cli;
 
-import wallet.controller.AuthController;
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -66,6 +64,11 @@ public class ConsoleApp {
                             default -> new CommandResult(false, "Unknown budget command");
                         };
                     }
+
+                    case "income" -> controllers.transaction().addIncome(commandArgs);
+                    case "expense" -> controllers.transaction().addExpense(commandArgs);
+                    case "transfer" -> controllers.transaction().addTransfer(commandArgs);
+
                     default -> new CommandResult(false, "Unknown command");
                 };
 
